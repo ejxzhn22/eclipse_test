@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="boardMapper">
+  	<!-- 로그인 -->
+  	<select id="login" parameterType="java.util.Map" resultType="java.util.Map">
+  		select id,name from springuser where id=#{id} and password=#{password}
+  	</select>
+  	
+  	<!-- 조회수  -->
+  	<update id="boardcnt" parameterType="int">
+  		update board set readcnt=readcnt+1 where bno=#{bno}
+  	</update>
+  	
+  	<!-- 게시글 추가 -->
+  	<insert id="register" parameterType="com.spring.sujin.dto.BoardDTO">
+  		insert into board(bno, title, content, id, regdate, readcnt, etc, del )
+  		 values(#{bno}, #{title}, #{content}, #{id},now(), 0, #{etc},0)	
+  	</insert>
+  	
+  	<!-- 게시글 전체 조회 -->
+  	<select id="list" resultType="com.spring.sujin.dto.BoardDTO">
+  		select * from board where del=0 order by bno desc;
+  	</select>
+  	
+  	<!-- 게시글 선택 조회 -->
+  	<select id="detail" parameterType="java.lang.Integer" resultType="com.spring.sujin.dto.BoardDTO">
+  		select * from board where bno=#{bno} and del=0
+  	</select>
+  	
+  	<!-- 게시글 수정 -->
+  	<update id="update" parameterType="com.spring.sujin.dto.BoardDTO">
+  		update board set title=#{title}, content=#{content}, regdate=now() where bno=#{bno}
+  	</update>
+  	
+  	<!-- 게시글 전체 댓글 조회 -->
+  	<select id="reply" parameterType="java.lang.Integer" resultType="com.spring.sujin.dto.ReplyDTO">
+  		select * from board_reply where bno=#{bno}
+  	</select>
+  	
+  	<!-- 댓글 작성 -->
+  	<insert id="replyregister" parameterType="com.spring.sujin.dto.ReplyDTO">
+  		insert into board_reply(rewriter, rememo, redate, bno)
+  		values(#{rewriter}, #{rememo}, now(), #{bno})
+  	</insert>
+  	
+  	<!-- 댓글수정  -->
+  	<update id="replyupdate" parameterType="com.spring.sujin.dto.ReplyDTO">
+  		update board_reply set rememo=#{rememo}, redate=now() where reno=#{reno}
+  	</update>
+  	
+  	<!-- 댓글 삭제 -->
+  	<delete id="replydelete" parameterType="java.lang.Integer">
+  		delete from board_reply where reno=#{reno}
+  	</delete>
+  	
+  	
+  	<!-- 페이징처리 -->
+  	<select id="listPaging" resultType="com.spring.sujin.dto.BoardDTO">
+  		SELECT * FROM board WHERE bno > 0 ORDER BY bno DESC, regdate DESC LIMIT #{page}, 10
+  	</select>
+  	
+  	<select id="listCriteria" resultType="com.spring.sujin.dto.BoardDTO">
+	    SELECT * FROM board WHERE bno > 0 ORDER BY bno DESC, regdate DESC LIMIT #{pageStart}, #{perPageNum}
+	</select>
+	
+	<select id="countArticles" resultType="int">
+	    SELECT COUNT(bno) FROM board WHERE bno > 0
+	</select>	
+  </mapper>
+  
+  
+  
+  
+  
+  
+  
+  
+  
